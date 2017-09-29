@@ -3,6 +3,10 @@
 services: docker
 dist: xenial
 
+language: php
+php:
+  - '7.1'
+
 env:
   - distro: ubuntu1604
   - distro: ubuntu1404
