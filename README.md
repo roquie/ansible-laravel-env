@@ -4,7 +4,7 @@
 
 This role configure Laravel and install depends.
 
-## Examples
+## Example playbook
 
 [Here.](./tests)
 
@@ -19,6 +19,10 @@ ansible-galaxy install roquie.ansible-laravel-env
 For now supports:
 * Ubuntu 16.04 LTS
 * Ubuntu 14.04 LTS
+
+## Todo
+
+* [ ] Complete tests.
 
 ## Vagrant
 
