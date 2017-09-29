@@ -1,0 +1,26 @@
+---
+
+- hosts: local
+  pre_tasks:
+    - name: Update apt cache.
+      apt: update_cache=yes cache_valid_time=600
+      when: ansible_os_family == 'Debian'
+
+    - name: Install test dependencies.
+      package: name=curl state=present
+
+  vars:
+    docker_package: "docker-ce=17.03*"
+  roles:
+    - geerlingguy.docker
+  tags:
+    - docker
+
+- hosts: local
+  pre_tasks:
+    - include_role: name=geerlingguy.ntp
+    - include_role: name=galexrt.ansible-ntpdate
+  roles:
+    - role_under_test
+  tags:
+    - kontena_agent

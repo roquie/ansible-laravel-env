@@ -1,0 +1,86 @@
+---
+
+- block:
+    - name: Ensure composer is installed
+      package: name=composer state=installed
+
+    - name: Ensure npm is installed
+      include_role: name=geerlingguy.nodejs
+      when: ale_npm.install_packages
+
+    - name: Install npm packages
+      npm: path="{{ ale_path }}" state=present production={{ ale_env.APP_ENV == 'production' }}
+      when: ale_npm.install_packages
+
+    - name: Install composer packages
+      composer:
+        command: install
+        working_dir: "{{ ale_path }}"
+        optimize_autoloader: "{{ ale_env.APP_ENV == 'production' }}"
+        no_dev: "{{ ale_env.APP_ENV == 'production' }}"
+        ignore_platform_reqs: yes
+
+    - name: Build assets
+      shell: npm run production
+      when: ale_npm.install_packages and ale_npm.build
+      args:
+        chdir: "{{ ale_path }}"
+
+  when: not ale_use_docker
+
+- block:
+    - name: Install composer packages for production
+      shell: docker run --rm -v $(pwd):/app composer install -o -n --no-dev --ignore-platform-reqs --no-progress
+      when: ale_env.APP_ENV == 'production'
+      args:
+        chdir: "{{ ale_path }}"
+
+    - name: Install composer packages for development
+      shell: docker run --rm -v $(pwd):/app composer install -n --no-progress
+      when: ale_env.APP_ENV != 'production'
+      args:
+        chdir: "{{ ale_path }}"
+
+    - name: Install npm dependencies for production
+      shell: docker run --rm -v $(pwd):/src:rw mkenney/npm:latest npm install --production
+      when: ale_env.APP_ENV == 'production'
+      args:
+        chdir: "{{ ale_path }}"
+
+    - name: Install npm dependencies for development
+      shell: docker run --rm -v $(pwd):/src:rw mkenney/npm:latest npm install
+      when: ale_env.APP_ENV != 'production'
+      args:
+        chdir: "{{ ale_path }}"
+
+    - name: Build assets
+      shell: docker run --rm -v $(pwd):/src:rw mkenney/npm:latest npm run production
+      when: ale_npm.install_packages and ale_npm.build
+      args:
+        chdir: "{{ ale_path }}"
+
+  when: ale_use_docker
+
+- name: Generate env variable file
+  template:
+    src: "env.j2"
+    dest: "{{ ale_path }}/.env"
+
+- name: Set up permissions
+  become: yes
+  file:
+    path: "{{ ale_path }}/{{ item }}"
+    recurse: yes
+    mode: 0775
+  with_items:
+    - vendor
+    - storage
+    - bootstrap/cache
+
+- name: Set up owner and group
+  become: yes
+  file:
+    path: "{{ ale_path }}"
+    recurse: yes
+    owner: "{{ ale_files.owner }}"
+    group: "{{ ale_files.group }}"

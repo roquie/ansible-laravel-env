@@ -1,0 +1,19 @@
+---
+
+- hosts: vagrant
+  become: yes
+  pre_tasks:
+    - name: Ensure dependencies for laravel/installer is installed
+      package: name={{ item }} state=installed
+      with_items: [php, php-zip, composer]
+    - name: Install Laravel installer
+      shell: composer global require laravel/installer
+    - name: Create Laravel Blank project
+      shell: ~/.composer/vendor/bin/laravel new blankproj --force
+      args:
+        chdir: /tmp
+    - name: Install docker
+      include_role: name=geerlingguy.docker
+  roles:
+    - ../../../ansible-laravel-env
+

@@ -1,0 +1,4 @@
+# http://docs.ansible.com/ansible/galaxy.html#installing-multiple-roles-from-a-file
+
+- name: geerlingguy.docker
+- name: geerlingguy.nodejs
