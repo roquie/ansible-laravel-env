@@ -1,34 +1,34 @@
 ---
 
-- name: Ensure docker is installed
+- name: Docker | Ensure docker is installed
   include_role: name=geerlingguy.docker
   when: not ale_skip_checks
 
-- name: Install composer packages for production
+- name: Docker | Install composer packages for production
   shell: docker run --rm -v $(pwd):/app composer install -o -n --no-dev --ignore-platform-reqs --no-progress
   when: ale_env.APP_ENV == 'production'
   args:
     chdir: "{{ ale_path }}"
 
-- name: Install composer packages for development
+- name: Docker | Install composer packages for development
   shell: docker run --rm -v $(pwd):/app composer install -n --no-progress
   when: ale_env.APP_ENV != 'production' or not ale_npm.install_prod_depends
   args:
     chdir: "{{ ale_path }}"
 
-- name: Install npm dependencies for production
+- name: Docker | Install npm dependencies for production
   shell: docker run --rm -v $(pwd):/src:rw mkenney/npm:latest npm install --production
   when: ale_env.APP_ENV == 'production' and ale_npm.install_prod_depends
   args:
     chdir: "{{ ale_path }}"
 
-- name: Install npm dependencies for development
+- name: Docker | Install npm dependencies for development
   shell: docker run --rm -v $(pwd):/src:rw mkenney/npm:latest npm install
   when: ale_env.APP_ENV != 'production'
   args:
     chdir: "{{ ale_path }}"
 
-- name: Build assets
+- name: Docker | Build assets
   shell: docker run --rm -v $(pwd):/src:rw mkenney/npm:latest npm run production
   when: ale_npm.install_packages and ale_npm.build
   args:
