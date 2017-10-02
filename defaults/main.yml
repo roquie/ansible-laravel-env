@@ -9,6 +9,7 @@ ale_path: '/tmp/blankproj'
 
 # Ownership.
 ale_files:
+  setup: false
   owner: "{{ ansible_user }}" # www-data or nginx
   group: "{{ ansible_user }}" # www-data or nginx
 

@@ -23,6 +23,7 @@
     - vendor
     - storage
     - bootstrap/cache
+  when: ale_files.setup
 
 - name: Set up owner and group
   become: yes
@@ -31,3 +32,4 @@
     recurse: yes
     owner: "{{ ale_files.owner }}"
     group: "{{ ale_files.group }}"
+  when: ale_files.setup
