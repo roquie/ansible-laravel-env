@@ -1,20 +1,19 @@
 ---
 galaxy_info:
   author: roquie
-  description: Install Kontena Agent on node-server.
+  description: Install Laravel depends.
   license: MIT
-  min_ansible_version: 2.2
+  min_ansible_version: 2.3
   platforms:
     - name: Ubuntu
       versions:
         - xenial
         - trusty
   galaxy_tags:
-    - kontena
-    - kontena-agent
-    - kontena-node
+    - laravel
+    - env
+    - build
     - docker
     - node
-    - agent
 
 dependencies: []

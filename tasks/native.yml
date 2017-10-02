@@ -1,0 +1,32 @@
+---
+
+- name: This command use environment for...
+  debug: var=ale_use_docker
+
+- name: Ensure composer is installed
+  package: name=composer state=installed
+  when: not ale_skip_checks
+
+- name: Ensure npm is installed
+  include_role: name=geerlingguy.nodejs
+  when:
+    - ale_npm.install_packages
+    - not ale_skip_checks
+
+- name: Install npm packages
+  npm: path="{{ ale_path }}" state=present production={{ ale_env.APP_ENV == 'production' and ale_npm.install_prod_depends }}
+  when: ale_npm.install_packages
+
+- name: Install composer packages
+  composer:
+    command: install
+    working_dir: "{{ ale_path }}"
+    optimize_autoloader: "{{ ale_env.APP_ENV == 'production' }}"
+    no_dev: "{{ ale_env.APP_ENV == 'production' }}"
+    ignore_platform_reqs: yes
+
+- name: Build assets
+  shell: npm run production
+  when: ale_npm.install_packages and ale_npm.build
+  args:
+    chdir: "{{ ale_path }}"

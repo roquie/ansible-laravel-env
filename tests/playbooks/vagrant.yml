@@ -12,8 +12,6 @@
       shell: ~/.composer/vendor/bin/laravel new blankproj --force
       args:
         chdir: /tmp
-    - name: Install docker
-      include_role: name=geerlingguy.docker
   roles:
     - ../../../ansible-laravel-env
 
