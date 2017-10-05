@@ -33,19 +33,19 @@
     chdir: "{{ ale_path }}"
 
 - name: Docker | Install npm dependencies for production
-  shell: docker run -it --rm -v $(pwd):/usr/src/app -w /usr/src/app node:8 npm install --production
+  shell: docker run --rm -v $(pwd):/usr/src/app -w /usr/src/app node:8 npm install --production
   when: ale_env.APP_ENV == 'production' and ale_npm.install_prod_depends
   args:
     chdir: "{{ ale_path }}"
 
 - name: Docker | Install npm dependencies for development
-  shell: docker run -it --rm -v $(pwd):/usr/src/app -w /usr/src/app node:8 npm install
+  shell: docker run --rm -v $(pwd):/usr/src/app -w /usr/src/app node:8 npm install
   when: ale_env.APP_ENV != 'production'
   args:
     chdir: "{{ ale_path }}"
 
 - name: Docker | Build assets
-  shell: docker run -it --rm -v $(pwd):/usr/src/app -w /usr/src/app node:8 npm run production
+  shell: docker run --rm -v $(pwd):/usr/src/app -w /usr/src/app node:8 npm run production
   when: ale_npm.install_packages and ale_npm.build
   args:
     chdir: "{{ ale_path }}"
