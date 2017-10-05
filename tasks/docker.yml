@@ -5,31 +5,47 @@
   when: not ale_skip_checks
 
 - name: Docker | Install composer packages for production
-  shell: docker run --rm -v $(pwd):/app composer install -o -n --no-dev --ignore-platform-reqs --no-progress
+  shell: |
+      docker run --rm \
+        --user $(id -u):$(id -g) \
+        -v $(pwd):/app \
+        -v ~/.ssh:/root/.ssh \
+        -v /etc/passwd:/etc/passwd:ro \
+        -v /etc/group:/etc/group:ro \
+        -v ~/.composer:/composer \
+        composer install -o -n --no-dev --ignore-platform-reqs --no-progress
   when: ale_env.APP_ENV == 'production'
   args:
     chdir: "{{ ale_path }}"
 
 - name: Docker | Install composer packages for development
-  shell: docker run --rm -v $(pwd):/app composer install -n --no-progress
+  shell: |
+    docker run --rm \
+      --user $(id -u):$(id -g) \
+      -v $(pwd):/app \
+      -v ~/.ssh:/root/.ssh \
+      -v /etc/passwd:/etc/passwd:ro \
+      -v /etc/group:/etc/group:ro \
+      -v ~/.composer:/composer \
+      composer install -n --no-progress
   when: ale_env.APP_ENV != 'production' or not ale_npm.install_prod_depends
   args:
     chdir: "{{ ale_path }}"
 
 - name: Docker | Install npm dependencies for production
-  shell: docker run --rm -v $(pwd):/src:rw mkenney/npm:latest npm install --production
+  shell: docker run -it --rm -v $(pwd):/usr/src/app -w /usr/src/app node:8 npm install --production
   when: ale_env.APP_ENV == 'production' and ale_npm.install_prod_depends
   args:
     chdir: "{{ ale_path }}"
 
 - name: Docker | Install npm dependencies for development
-  shell: docker run --rm -v $(pwd):/src:rw mkenney/npm:latest npm install
+  shell: docker run -it --rm -v $(pwd):/usr/src/app -w /usr/src/app node:8 npm install
   when: ale_env.APP_ENV != 'production'
   args:
     chdir: "{{ ale_path }}"
 
 - name: Docker | Build assets
-  shell: docker run --rm -v $(pwd):/src:rw mkenney/npm:latest npm run production
+  shell: docker run -it --rm -v $(pwd):/usr/src/app -w /usr/src/app node:8 npm run production
   when: ale_npm.install_packages and ale_npm.build
   args:
     chdir: "{{ ale_path }}"
