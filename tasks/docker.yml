@@ -13,7 +13,7 @@
         -v /etc/passwd:/etc/passwd:ro \
         -v /etc/group:/etc/group:ro \
         -v ~/.composer:/composer \
-        composer install -o -n --no-dev --ignore-platform-reqs --no-progress
+        roquie/composer-parallel install -q -o -n --no-dev --ignore-platform-reqs
   when: ale_env.APP_ENV == 'production'
   args:
     chdir: "{{ ale_path }}"
@@ -27,7 +27,7 @@
       -v /etc/passwd:/etc/passwd:ro \
       -v /etc/group:/etc/group:ro \
       -v ~/.composer:/composer \
-      composer install -n --no-progress
+      roquie/composer-parallel install -n -q --ignore-platform-reqs
   when: ale_env.APP_ENV != 'production' or not ale_npm.install_prod_depends
   args:
     chdir: "{{ ale_path }}"
