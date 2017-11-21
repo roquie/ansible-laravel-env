@@ -28,19 +28,12 @@
       -v /etc/group:/etc/group:ro \
       -v ~/.composer:/composer \
       roquie/composer-parallel install -n -q --ignore-platform-reqs
-  when: ale_env.APP_ENV != 'production' or not ale_npm.install_prod_depends
-  args:
-    chdir: "{{ ale_path }}"
-
-- name: Docker | Install npm dependencies for production
-  shell: docker run --rm -v $(pwd):/usr/src/app -w /usr/src/app node:8 npm install --production
-  when: ale_env.APP_ENV == 'production' and ale_npm.install_prod_depends
-  args:
-    chdir: "{{ ale_path }}"
-
-- name: Docker | Install npm dependencies for development
-  shell: docker run --rm -v $(pwd):/usr/src/app -w /usr/src/app node:8 npm install
   when: ale_env.APP_ENV != 'production'
+  args:
+    chdir: "{{ ale_path }}"
+
+- name: Docker | Install npm dependencies
+  shell: docker run --rm -v $(pwd):/usr/src/app -w /usr/src/app node:8 npm install
   args:
     chdir: "{{ ale_path }}"
 

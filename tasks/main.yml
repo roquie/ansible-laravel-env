@@ -1,11 +1,11 @@
 ---
 
 - name: Install depends use native package managers
-  include: native.yml
+  import_tasks: native.yml
   when: not ale_use_docker
 
 - name: Install depends use Dockerized package managers
-  include: docker.yml
+  import_tasks: docker.yml
   when: ale_use_docker
 
 - name: Generate env variable file
