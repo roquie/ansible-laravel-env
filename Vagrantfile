@@ -26,7 +26,7 @@ Vagrant.configure('2') do |config|
 
     machine.vm.provision 'ansible' do |ansible|
       ansible.playbook = 'tests/playbooks/vagrant.yml'
-      ansible.sudo = true
+      ansible.become = true
       ansible.inventory_path = 'tests/inventory/test'
       ansible.host_key_checking = false
       ansible.limit = 'vagrant'

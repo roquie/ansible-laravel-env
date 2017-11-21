@@ -14,7 +14,6 @@ ale_files:
   group: "{{ ansible_user }}" # www-data or nginx
 
 ale_npm:
-  install_prod_depends: no # npm install --production (work if APP_ENV=production)
   install_packages: yes
   build: yes # npm run production
 

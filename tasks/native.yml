@@ -12,7 +12,7 @@
 
 - name: Native | Install npm packages
   shell: npm install
-  #npm: path="{{ ale_path }}" state=present production={{ ale_env.APP_ENV == 'production' and ale_npm.install_prod_depends }}
+  #npm: path="{{ ale_path }}" state=present production={{ ale_env.APP_ENV == 'production' }}
   when: ale_npm.install_packages
   args:
     chdir: "{{ ale_path }}"

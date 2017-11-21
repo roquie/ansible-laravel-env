@@ -14,6 +14,11 @@ This role configure Laravel and install depends.
 ansible-galaxy install roquie.ansible-laravel-env
 ```
 
+## Dependencies
+
+* \>= Ansible 2.4
+* \>= Vagrant 2.0 for testing runs.
+
 ## Supported OS
 
 For now supports:
@@ -22,13 +27,15 @@ For now supports:
 
 ## Todo
 
+* [ ] Change variables to normal name.
+* [ ] Add `yarn` pkg manager for native & docker tasks.
 * [ ] Complete tests.
 
 ## Vagrant
 
 * `cd /path/to/project`
 * `cd tests && ansible-galaxy install -r requirements.yml && cd ..`
-* `vagrant up` 
+* `vagrant up --provision` 
 
 ## License
 
