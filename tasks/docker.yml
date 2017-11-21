@@ -34,6 +34,7 @@
 
 - name: Docker | Install npm dependencies
   shell: docker run --rm -v $(pwd):/usr/src/app -w /usr/src/app node:8 npm install
+  when: ale_npm.install_packages
   args:
     chdir: "{{ ale_path }}"
 
