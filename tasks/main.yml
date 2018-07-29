@@ -1,5 +1,10 @@
 ---
 
+- name: Generate env variable file
+  template:
+    src: "env.j2"
+    dest: "{{ ale_path }}/.env"
+
 - name: Install depends use native package managers
   import_tasks: native.yml
   when: not ale_use_docker
@@ -7,11 +12,6 @@
 - name: Install depends use Dockerized package managers
   import_tasks: docker.yml
   when: ale_use_docker
-
-- name: Generate env variable file
-  template:
-    src: "env.j2"
-    dest: "{{ ale_path }}/.env"
 
 - name: Set up permissions
   become: yes
